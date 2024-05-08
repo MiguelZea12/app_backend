@@ -1,5 +1,4 @@
 from sqlalchemy import text
-from app.engines import session_bpm
 from app.extensions import db, bcrypt_instance
 from app.models.user import User
 from app.utils.utilities import timeNowTZ
