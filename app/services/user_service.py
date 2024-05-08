@@ -6,8 +6,6 @@ from app.utils.utilities import timeNowTZ
 from app.schemas.user_schema import UserSchema
 
 
-
-
 def get_all():
     user_objects = db.session.query(User).filter(User.status == True).all()
     user_list = UserSchema(many=True).dump(user_objects)
