@@ -4,9 +4,6 @@ FROM python:3.9
 # Establece el directorio de trabajo en /app
 WORKDIR /app
 
-# Copia el archivo de requerimientos al directorio de trabajo
-COPY .env .
-
 
 COPY requirements.txt .
 

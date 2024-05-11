@@ -6,17 +6,19 @@ services:
     ports:
       - "5000:5000"
     environment:
-      ENVIRONMENT: "DEV"
-      SECRET_KEY: "SUPER_SECRET_KEY"
-      DEV_DATABASE_URI: "postgresql+psycopg2://postgres:12345678@db:5432/backend"  # Keep connection details the same
-      JWT_SECRET_KEY: "SUPER_SECRET_KEY"
-      JWT_ALGORITHM: "RS256"
+      - ENVIRONMENT=DEV
+      - SECRET_KEY=SUPER_SECRET_KEY
+      - DEV_DATABASE_URI=postgresql+psycopg2://postgres:12345678@db:5432/backend
+      - JWT_SECRET_KEY=SUPER_SECRET_KEY
+      - JWT_ALGORITHM=RS256
+      - SQLALCHEMY_ECHO=true
     depends_on:
       - db
     volumes:
       - .:/app
     networks:
-      - mynetwork
+      - bridge_network
+
   db:
     image: postgres:14.12  # Specify version here
     environment:
@@ -26,14 +28,13 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - mynetwork
+      - bridge_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+
 networks:
-  mynetwork:
+  bridge_network:
     driver: bridge
-
-
