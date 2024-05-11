@@ -1,13 +1,12 @@
-"""Controladores de la aplicación."""
 from flask import Blueprint
 from os.path import dirname, basename, isfile, join
 import os
 import glob
 import importlib.util
+from app.controllers.user_controller import user_ns  # Importa el Namespace aquí
 
 modules = glob.glob(join(dirname(__file__), "*.py"))
-__all__ = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
-
+__all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
 # Obtener la lista de archivos en el módulo 'controllers'
 controllers_dir = os.path.dirname(__file__)
@@ -29,3 +28,6 @@ for module_file in module_files:
         item = getattr(module, name)
         if isinstance(item, Blueprint) and name.endswith("_blueprint"):
             __blueprints__.append(item)
+
+# Agrega el Namespace a __all__
+__all__.append("user_ns")

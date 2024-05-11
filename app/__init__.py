@@ -1,77 +1,59 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+from flask_restx import Api
+from app.controllers.user_controller import user_blueprint
 from app.utils.error_handler import handle_error
 from os import environ
 
-app = Flask(__name__)
+app = Flask(__name__)  # Crea una instancia de la aplicación Flask
+api = Api(app)  # Crea una instancia de la clase Api de Flask-Restx
 
-if environ.get("ENVIRONMENT") == "PROD":
-    app.config.from_object("app.config.ProductionConfig")
-else:
-    app.config.from_object("app.config.DevelopmentConfig")
-CORS(app)
+app.register_blueprint(user_blueprint)  # Registra el blueprint del controlador de usuario en la aplicación
 
+
+# Implentacion de sentry para manejo de errores
+sentry_sdk.init(
+    dsn="https://e480b614df5bbb750dd5e3d1a5d36218@o4507218437341184.ingest.us.sentry.io/4507233259159552",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
+
+# Configuración de la aplicación según el entorno (producción o desarrollo)
+if environ.get("ENVIRONMENT") == "PROD":  # Si la variable de entorno ENVIRONMENT es PROD
+    app.config.from_object("app.config.ProductionConfig")  # Usa la configuración de producción
+else:  # Si la variable de entorno ENVIRONMENT no es PROD
+    app.config.from_object("app.config.DevelopmentConfig")  # Usa la configuración de desarrollo
+
+CORS(app)  # Configura CORS para permitir solicitudes desde cualquier origen
+
+# Configuración de la base de datos PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:12345@localhost:5434/prueba'
+
+# Configuración de la aplicación Flask
 with app.app_context():
+    # Importa extensiones y modelos dentro del contexto de la aplicación
     from app.extensions import db, jwt, bcrypt_instance
     from app.models.declarative_base import DeclarativeBase
     from app.models import *
     from app.controllers import *
 
-    app.register_error_handler(Exception, handle_error)
-    db.init_app(app)
-    jwt.init_app(app)
-    bcrypt_instance.init_app(app)
+    app.register_error_handler(Exception, handle_error)  # Registra un manejador de errores global
+
+    db.init_app(app)  # Inicializa la extensión de base de datos
+    jwt.init_app(app)  # Inicializa la extensión JWT
+    bcrypt_instance.init_app(app)  # Inicializa la extensión de hash de contraseñas
+
+    # Crea todas las tablas en la base de datos si aún no existen
     DeclarativeBase.metadata.create_all(db.engine, checkfirst=True)
 
-
-@jwt.revoked_token_loader
-def revoked_token_callback(jwt_header, jwt_payload):
-    from app.utils.response import create_response
-
-    return create_response(
-        "error",
-        message="El Token ha sido revocado. Inicie Sesión nuevamente.",
-        status_code=401,
-    )
-
-
-@jwt.expired_token_loader
-def expired_token_callback(jwt_header, jwt_payload):
-    from app.utils.response import create_response
-
-    return create_response(
-        "error",
-        message="El Token ha caducado. Inicie Sesión nuevamente.",
-        status_code=401,
-    )
-
-
-@jwt.invalid_token_loader
-def invalid_token_callback(error):
-    from app.utils.response import create_response
-
-    return create_response(
-        "error", message="Fallo en la verificación de la firma.", status_code=401
-    )
-
-
-@jwt.unauthorized_loader
-def missing_token_callback(error):
-    from app.utils.response import create_response
-
-    return create_response(
-        "error", message="La solicitud no contiene un Token de Acceso.", status_code=401
-    )
-
-
-@jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header, jwt_payload):
-    from app.models.token_block_list import TokenBlockList
-
-    jti = jwt_payload["jti"]
-    token = db.session.query(TokenBlockList).filter_by(jti=jti).scalar()
-    return token is not None
-
+# Define un endpoint de ejemplo para manejar solicitudes POST
 @app.route('/endpoint', methods=['POST'])
 def handle_post_request():
     # Obtener el JSON enviado en la solicitud POST
@@ -91,15 +73,3 @@ def handle_post_request():
 
     # Por ejemplo, devolver una respuesta al cliente
     return jsonify({"message": "Solicitud recibida correctamente"})
-#: Registro de Blueprints
-from app.controllers import __blueprints__
-
-for blueprint in __blueprints__:
-    print("Registering Blueprint: {}".format(blueprint.name))
-    app.register_blueprint(blueprint)
-
-
-@app.route("/", methods=["GET"])
-def test():
-    return "Template API-Flask"
-
