@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para ejecutar la aplicación cuando se inicie el contenedor
-CMD ["flask", "run"]
+CMD ["python", "run.py"]

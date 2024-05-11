@@ -5,11 +5,13 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_restx import Api
 from app.controllers.user_controller import user_blueprint
 from app.utils.error_handler import handle_error
+from werkzeug.middleware.proxy_fix import ProxyFix
 from os import environ
 
 app = Flask(__name__)  # Crea una instancia de la aplicación Flask
 api = Api(app)  # Crea una instancia de la clase Api de Flask-Restx
 
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.register_blueprint(user_blueprint)  # Registra el blueprint del controlador de usuario en la aplicación
 
 
@@ -73,3 +75,7 @@ def handle_post_request():
 
     # Por ejemplo, devolver una respuesta al cliente
     return jsonify({"message": "Solicitud recibida correctamente"})
+
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({'message': 'pong'})

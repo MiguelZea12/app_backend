@@ -24,7 +24,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345678
     ports:
-      - "5432:5434"
+      - "5432:5432"
     networks:
       - mynetwork
     healthcheck:
