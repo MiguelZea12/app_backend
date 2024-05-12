@@ -96,7 +96,7 @@ http://127.0.0.1:5000/user/
 - [@Juan Daza](https://github.com/Dazaiyan)
 - [@Chistian Encalada](https://github.com/Christian-Encalada)
 - [@Aldair Toala](https://github.com/Aldair2003)
-- [@Eddie Ajoy]()
+- [@Eddie Ajoy](https://github.com/Eddieajoy)
 
 
 
@@ -188,4 +188,4 @@ http://127.0.0.1:5000/user/
 - [@Juan Daza](https://github.com/Dazaiyan)
 - [@Chistian Encalada](https://github.com/Christian-Encalada)
 - [@Aldair Toala](https://github.com/Aldair2003)
-- [@Eddie Ajoy]()
+- [@Eddie Ajoy](https://github.com/Eddieajoy)
