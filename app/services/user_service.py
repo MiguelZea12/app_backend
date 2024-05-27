@@ -34,14 +34,18 @@ def exists(identification: str):
     )
     return user_objects is not None
 
-def create(user_list: dict):
-    if "identification" not in user_list:
-        return None  # Manejar el caso en el que la clave "identification" no esté presente
+def create(name: str, lastname: str, identification: str, password: str, status: bool, created_at: str):
 
-    if exists(user_list["identification"]):
-        return None
-
-    new_user = User(**user_list)
+    new_user = User(
+        name=name,
+        lastname=lastname,
+        identification = identification,
+        password=bcrypt_instance.generate_password_hash(password).decode("utf8"),
+        status=status,
+        created_at=created_at
+    )
     db.session.add(new_user)
+
     db.session.commit()
-    return UserSchema().dump(new_user)
+    user_list = UserSchema(exclude=["password"]).dump(new_user)
+    return user_list

@@ -29,9 +29,15 @@ class UserList(Resource):
 @user_blueprint.route("/post", methods=["POST"])
 def create():
     json_data = request.get_json(force=True)
-    users = user_service.create(json_data)
+    users = user_service.create(
+        json_data["name"],
+        json_data["lastname"],
+        json_data["identification"],
+        json_data["password"],
+        json_data["status"],
+        json_data["created_at"]
+    )
     if users is None:
-        print(users)
         return create_response(
             "error", data={"message": "Error al crear al usuario"}, status_code=500
         )
