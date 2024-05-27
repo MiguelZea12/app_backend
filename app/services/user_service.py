@@ -25,3 +25,23 @@ def get_all():
         print(f"Error al obtener usuarios: {str(e)}")  # Imprime el mensaje de error
         traceback.print_exc()  # Imprimir la traza completa de la excepción
         return None  # Devuelve None para indicar que ocurrió un error durante la operación
+
+def exists(identification: str):
+    user_objects = (
+        db.session.query(User)
+        .filter(User.identification == identification, User.status == True)
+        .first()
+    )
+    return user_objects is not None
+
+def create(user_list: dict):
+    if "identification" not in user_list:
+        return None  # Manejar el caso en el que la clave "identification" no esté presente
+
+    if exists(user_list["identification"]):
+        return None
+
+    new_user = User(**user_list)
+    db.session.add(new_user)
+    db.session.commit()
+    return UserSchema().dump(new_user)

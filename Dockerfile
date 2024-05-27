@@ -4,9 +4,6 @@ FROM python:3.9
 # Establece el directorio de trabajo en /app
 WORKDIR /app
 
-# Copia el archivo de requerimientos al directorio de trabajo
-COPY .env .
-
 
 COPY requirements.txt .
 
@@ -20,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para ejecutar la aplicación cuando se inicie el contenedor
-CMD ["flask", "run"]
+CMD ["python3", "run.py"]

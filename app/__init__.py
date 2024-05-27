@@ -33,9 +33,6 @@ else:  # Si la variable de entorno ENVIRONMENT no es PROD
 
 CORS(app)  # Configura CORS para permitir solicitudes desde cualquier origen
 
-# Configuración de la base de datos PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:12345@localhost:5434/prueba'
-
 # Configuración de la aplicación Flask
 with app.app_context():
     # Importa extensiones y modelos dentro del contexto de la aplicación
