@@ -3,7 +3,7 @@ from app.schemas.base_schema import BaseSchema  # Asegúrate de importar correct
 
 class UserSchema(BaseSchema):  # Define una nueva clase llamada UserSchema que hereda de BaseSchema
     user_id = fields.Int(dump_only=True)  # Define un campo llamado "user_id" que se espera que sea un entero (Int) y solo se serializa (dump_only=True)
-    identification = fields.Str(required=True)  # Define un campo llamado "identification" que se espera que sea una cadena (Str) y es obligatorio (required=True)
+    identification = fields.Str(required=True, unique=True)  # Define un campo llamado "identification" que se espera que sea una cadena (Str) y es obligatorio (required=True)
     name = fields.Str(required=True)  # Define un campo llamado "name" que se espera que sea una cadena (Str) y es obligatorio (required=True)
     password = fields.Str(required=True)  # Define un campo llamado "password" que se espera que sea una cadena (Str) y es obligatorio (required=True)
     lastname = fields.Str(required=True)  # Define un campo llamado "lastname" que se espera que sea una cadena (Str) y es obligatorio (required=True)

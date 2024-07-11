@@ -13,7 +13,7 @@ class User(DeclarativeBase):  # Define una nueva clase llamada User que hereda d
     status = db.Column(db.Boolean, nullable=False, default=True)  # Define una columna llamada "status" de tipo Booleano que no puede ser nula y tiene un valor predeterminado de True
     created_at = db.Column(db.DateTime, nullable=False)  # Define una columna llamada "created_at" de tipo DateTime que no puede ser nula
     
-    def __init__(self, identification, name, password, lastname, status, created_at):  # Constructor de la clase User
+    def __init__(self, identification, name, password, lastname, status):  # Constructor de la clase User
         self.identification = identification  # Asigna el valor de identification al atributo de la instancia
         self.name = name  # Asigna el valor de name al atributo de la instancia
         self.password = password  # Asigna el valor de password al atributo de la instancia

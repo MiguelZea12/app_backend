@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app.utils.response import create_response
 from flask_restx import Api, Resource, Namespace  # Importa Namespace de flask_restx
 
@@ -17,28 +17,24 @@ api.add_namespace(user_ns)  # Agrega el Namespace al Api
 user_schema = UserSchema()
 
 # Define la clase para obtener todos los usuarios
-@user_ns.route("/users")
+@user_ns.route("/")
 class UserList(Resource):
     def get(self):
         """Obtener todos los usuarios"""
         users = user_service.get_all()
         print(users)  # Verificar datos devueltos por el servicio
         return users
-
-
-@user_blueprint.route("/post", methods=["POST"])
-def create():
-    json_data = request.get_json(force=True)
-    users = user_service.create(
-        json_data["name"],
-        json_data["lastname"],
-        json_data["identification"],
-        json_data["password"],
-        json_data["status"],
-        json_data["created_at"]
-    )
-    if users is None:
-        return create_response(
-            "error", data={"message": "Error al crear al usuario"}, status_code=500
+    def post(self):
+        """Crear un nuevo usuario"""
+        json_data = request.get_json(force=True)
+        users = user_service.create(
+            json_data["identification"],
+            json_data["name"],
+            json_data["lastname"],
+            json_data["password"]
         )
-    return create_response("success", data={"usuario": users}, status_code=201)
+        if users is None:
+            return create_response(
+                "error", data={"message": "Error in load the user"}, status_code=500
+            )
+        return create_response("success", data={"User": jsonify(users)}, status_code=201)

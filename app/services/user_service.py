@@ -4,6 +4,7 @@ from app.extensions import db, bcrypt_instance
 from app.models.user import User
 from app.utils.utilities import timeNowTZ
 from app.schemas.user_schema import UserSchema
+from app.utils.error_handler import handle_error
 
 
 def get_all():
@@ -34,18 +35,22 @@ def exists(identification: str):
     )
     return user_objects is not None
 
-def create(name: str, lastname: str, identification: str, password: str, status: bool, created_at: str):
+def create( identification: str, name: str, lastname: str, password: str):
+    try :        
+        new_user = User(
+            identification = identification,
+            name=name,
+            lastname=lastname,
+            password=bcrypt_instance.generate_password_hash(password).decode("utf8"),
+            status=True
+        )
+        db.session.add(new_user)
 
-    new_user = User(
-        name=name,
-        lastname=lastname,
-        identification = identification,
-        password=bcrypt_instance.generate_password_hash(password).decode("utf8"),
-        status=status,
-        created_at=created_at
-    )
-    db.session.add(new_user)
+        db.session.commit()
+        user_list = UserSchema(exclude=["password"]).dump(new_user)
+        return user_list
 
-    db.session.commit()
-    user_list = UserSchema(exclude=["password"]).dump(new_user)
-    return user_list
+    except Exception as e:
+        print(f"Error al crear usuario: {str(e)}")
+        traceback.print_exc()
+        return None
