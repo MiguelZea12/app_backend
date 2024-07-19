@@ -5,7 +5,6 @@ from flask_jwt_extended import JWTManager
 import logging
 from flask import has_request_context, request
 
-
 # Instancias de las extensiones
 db = SQLAlchemy()  # Instancia de SQLAlchemy para interactuar con la base de datos
 bcrypt_instance = Bcrypt()  # Instancia de Bcrypt para el cifrado de contraseñas
