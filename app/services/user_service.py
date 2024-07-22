@@ -25,3 +25,5 @@ def get_all():
         print(f"Error al obtener usuarios: {str(e)}")  # Imprime el mensaje de error
         traceback.print_exc()  # Imprimir la traza completa de la excepción
         return None  # Devuelve None para indicar que ocurrió un error durante la operación
+
+
