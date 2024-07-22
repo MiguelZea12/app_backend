@@ -23,4 +23,5 @@ class UserList(Resource):
         users = user_service.get_all()
         print(users)  # Verificar datos devueltos por el servicio
         return users
-
+    
+    
