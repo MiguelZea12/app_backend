@@ -33,6 +33,7 @@ status_model = manager_ns.model('StatusUpdate', {
     'status': fields.Boolean(required=True, description='New status of the manager')
 })
 
+
 # Define la clase para obtener todos los gestores
 @manager_ns.route("/managers")
 class ManagerList(Resource):
@@ -41,6 +42,7 @@ class ManagerList(Resource):
         managers = manager_service.get_all_managers()
         print(managers) # Verificar datos devueltos por el servicio
         return managers
+
 
 # Define la clase para crear un nuevo gestor
 @manager_ns.route("/crear")
@@ -60,10 +62,10 @@ class ManagerCreate(Resource):
 
 
 # Define la clase para actualizar el estado de un gestor
-@manager_ns.route("/toggle_status/<int:manager_id>")
+@manager_ns.route("/toggle_status/<string:identity_document>")
 class ManagerStatus(Resource):
     @manager_ns.expect(status_model)
-    def put(self, manager_id):
+    def put(self, identity_document):
         """Actualizar el estado de un manager (habilitar o deshabilitar)"""
         data = request.get_json()
         if not data:
@@ -73,11 +75,12 @@ class ManagerStatus(Resource):
         if new_status is None:
             return jsonify({"error": "El campo 'status' es requerido."}), 400
 
-        updated_manager = manager_service.toggle_manager_status(manager_id, new_status)
+        updated_manager = manager_service.toggle_manager_status(identity_document, new_status)
         if updated_manager is None:
             return jsonify({"error": "Manager no encontrado o no se pudo actualizar el estado."}), 404
 
         return "Se ha actualizado el estado correctamente", 200
+
 
 
 # Define la clase para actualizar a un gestor existente
@@ -95,3 +98,24 @@ class ManagerDetail(Resource):
             return jsonify({"error": "Manager no encontrado o no se pudo actualizar."}), 404
 
         return updated_manager, 200
+
+
+# Define la clase para buscar un gestor por si numero de identificacion
+@manager_ns.route("/buscar/<string:identity_document>")
+class ManagerByIdentityDocument(Resource):
+    @manager_ns.doc('get_manager_by_identity_document')
+    @manager_ns.response(200, 'Success')
+    @manager_ns.response(404, 'Manager not found')
+    def get(self, identity_document):
+        """
+        Obtener un manager por su número de identificación.
+
+        Este endpoint permite obtener un manager por su número de identificación.
+        Si el manager se encuentra, se devuelve un código de estado 200 con los datos del manager.
+        Si no se encuentra, se devuelve un código de estado 404 con un mensaje de error.
+        """
+        manager = manager_service.get_manager_by_identity_document(identity_document)
+        if manager is None:
+            return jsonify({"error": "Manager no encontrado."}), 404
+
+        return manager, 200

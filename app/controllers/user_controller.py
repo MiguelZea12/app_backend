@@ -24,4 +24,4 @@ class UserList(Resource):
         print(users)  # Verificar datos devueltos por el servicio
         return users
     
-    
+

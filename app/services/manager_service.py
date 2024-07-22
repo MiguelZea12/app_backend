@@ -25,21 +25,21 @@ def get_all_managers():
         return None  # Devuelve None para indicar que ocurrió un error durante la operación
 
 
-def toggle_manager_status(manager_id, new_status):
+def toggle_manager_status(identity_document, new_status):
     """
     Función para cambiar el estado de un gestor.
 
     Parámetros:
-    - manager_id (int): ID del manager a actualizar.
+    - identity_document (str): Documento de identidad del manager a actualizar.
     - new_status (bool): Nuevo estado del manager.
 
     Retorna:
     - dict or None: Diccionario que representa el manager actualizado si la operación es exitosa, o None si ocurre un error.
     """
     try:
-        manager = db.session.query(Manager).filter(Manager.id == manager_id).first()
+        manager = db.session.query(Manager).filter(Manager.identity_document == identity_document).first()
         if not manager:
-            print(f"Manager con ID {manager_id} no encontrado.")
+            print(f"Manager con documento de identidad {identity_document} no encontrado.")
             return None
         
         manager.status = new_status
@@ -52,6 +52,7 @@ def toggle_manager_status(manager_id, new_status):
         print(f"Error al actualizar el estado del manager: {str(e)}")
         traceback.print_exc()
         return None
+
 
 
 def create_manager(data):
@@ -137,5 +138,29 @@ def update_manager(manager_id, data):
         return manager_data
     except Exception as e:
         print(f"Error al actualizar el manager: {str(e)}")
+        traceback.print_exc()
+        return None
+    
+
+def get_manager_by_identity_document(identity_document):
+    """
+    Función para obtener un manager por su número de identificación.
+
+    Parámetros:
+    - identity_document (str): Número de identificación del manager.
+
+    Retorna:
+    - dict or None: Diccionario que representa el manager si se encuentra, o None si no se encuentra.
+    """
+    try:
+        manager = db.session.query(Manager).filter(Manager.identity_document == identity_document).first()
+        if not manager:
+            return None
+        
+        manager_schema = ManagerSchema()
+        manager_data = manager_schema.dump(manager)
+        return manager_data
+    except Exception as e:
+        print(f"Error al obtener manager por número de identificación: {str(e)}")
         traceback.print_exc()
         return None
