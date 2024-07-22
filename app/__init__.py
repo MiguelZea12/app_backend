@@ -40,15 +40,13 @@ else:
 
 CORS(app)
 
-# Configuración de la base de datos PostgreSQL
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:12345@localhost:5432/prueba'
-
 # Configuración de la aplicación Flask
 with app.app_context():
     # Importa extensiones y modelos dentro del contexto de la aplicación
     from app.extensions import db, jwt, bcrypt_instance
     from app.models.declarative_base import DeclarativeBase
     from app.models import *
+    from app.models.token_block_list import TokenBlockList
     from app.controllers import *
 
     app.register_error_handler(Exception, handle_error)
