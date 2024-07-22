@@ -46,7 +46,6 @@ with app.app_context():
     from app.extensions import db, jwt, bcrypt_instance
     from app.models.declarative_base import DeclarativeBase
     from app.models import *
-    from app.models.token_block_list import TokenBlockList
     from app.controllers import *
 
     app.register_error_handler(Exception, handle_error)
