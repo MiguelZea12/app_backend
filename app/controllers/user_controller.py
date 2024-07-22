@@ -23,18 +23,18 @@ class UserList(Resource):
         """Obtener todos los usuarios"""
         users = user_service.get_all()
         print(users)  # Verificar datos devueltos por el servicio
-        return users
+        return create_response("success", data={"users": users}, status_code=200)
+
     def post(self):
         """Crear un nuevo usuario"""
         json_data = request.get_json(force=True)
-        users = user_service.create(
+        new_user = user_service.create(
             json_data["identification"],
             json_data["name"],
             json_data["lastname"],
             json_data["password"]
         )
-        if users is None:
-            return create_response(
-                "error", data={"message": "Error in load the user"}, status_code=500
-            )
-        return create_response("success", data={"User": jsonify(users)}, status_code=201)
+        if new_user is None:
+            return create_response("error", data={"message": "Error creating the user"}, status_code=500)
+
+        return create_response("success", data={"user": new_user}, status_code=201)
