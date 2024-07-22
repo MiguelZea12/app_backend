@@ -1,23 +1,6 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    environment:
-      - ENVIRONMENT=DEV
-      - SECRET_KEY=SUPER_SECRET_KEY
-      - DEV_DATABASE_URI=postgresql+psycopg2://postgres:12345678@db:5432/backend
-      - JWT_ALGORITHM=RS256
-      - SQLALCHEMY_ECHO=true
-    depends_on:
-      - db
-    volumes:
-      - .:/app
-    networks:
-      - bridge_network
-
   db:
     image: postgres:14.12  # Specify version here
     environment:
@@ -34,8 +17,23 @@ services:
       timeout: 5s
       retries: 5
 
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      ENVIRONMENT: "DEV"
+      SECRET_KEY: "SUPER_SECRET_KEY"
+      DEV_DATABASE_URI: "postgresql+psycopg2://postgres:12345678@db:5432/backend"  # Keep connection details the same
+      JWT_SECRET_KEY: "SUPER_SECRET_KEY"
+      JWT_ALGORITHM: "RS256"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - bridge_network
+
 networks:
   bridge_network:
     driver: bridge
-
-

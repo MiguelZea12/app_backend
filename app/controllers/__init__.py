@@ -31,3 +31,8 @@ for module_file in module_files:
 
 # Agrega el Namespace a __all__
 __all__.append("user_ns")
+
+# Define la función register_namespaces
+def register_namespaces(api):
+    api.add_namespace(user_ns)
+    # Puedes agregar otros namespaces aquí
