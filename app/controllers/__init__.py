@@ -4,6 +4,7 @@ import os
 import glob
 import importlib.util
 from app.controllers.user_controller import user_ns  # Importa el Namespace aquí
+from app.controllers.caregiver_controller import caregiver_ns  # Importa el Namespace aquí
 
 modules = glob.glob(join(dirname(__file__), "*.py"))
 __all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
@@ -31,8 +32,10 @@ for module_file in module_files:
 
 # Agrega el Namespace a __all__
 __all__.append("user_ns")
+__all__.append("caregiver_ns")
 
 # Define la función register_namespaces
 def register_namespaces(api):
     api.add_namespace(user_ns)
+    api.add_namespace(caregiver_ns)  # Registra el namespace de caregiver
     # Puedes agregar otros namespaces aquí
