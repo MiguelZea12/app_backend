@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 # Importación explícita de los modelos
-from app.models.user import User
+from app.models.login import Login
 from app.models.role import Role
 
-__all__.extend(['User', 'Role'])  # Añadir explícitamente los modelos importados a __all__
+__all__.extend(['Login', 'Role'])  # Añadir explícitamente los modelos importados a __all__

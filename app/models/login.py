@@ -3,8 +3,8 @@ from app.models.declarative_base import DeclarativeBase
 from sqlalchemy.dialects.postgresql import JSONB  
 from datetime import datetime
 
-class User(DeclarativeBase):  # Define una nueva clase llamada User que hereda de DeclarativeBase
-    __tablename__ = "user"  # Nombre de la tabla en la base de datos
+class Login(DeclarativeBase):  # Define una nueva clase llamada User que hereda de DeclarativeBase
+    __tablename__ = "login"  # Nombre de la tabla en la base de datos
     id = db.Column(db.Integer, primary_key=True)  # Define una columna llamada "id" de tipo Integer y clave primaria
     identification = db.Column(db.String(10), nullable=False)  # Define una columna llamada "identification" de tipo String con una longitud máxima de 15 caracteres y no nula
     name = db.Column(db.String(100), nullable=False)  # Define una columna llamada "username" de tipo String con una longitud máxima de 100 caracteres y no nula

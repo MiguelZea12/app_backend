@@ -3,7 +3,6 @@ from flask_cors import CORS
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_restx import Api
-from app.controllers.user_controller import user_ns
 from app.controllers.role_controller import role_bp  # Importa el blueprint de roles
 from app.controllers import __blueprints__, register_namespaces
 from app.utils.error_handler import handle_error
