@@ -19,3 +19,4 @@ aniso8601>=0.82
 jsonschema==4.22.0
 sentry_sdk
 flask_jwt_extended
+cryptography
