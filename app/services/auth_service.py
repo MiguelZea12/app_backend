@@ -1,5 +1,5 @@
 from app.extensions import db, bcrypt_instance
-from app.models.user import User
+from app.models.login import Login
 from app.models.token_block_list import TokenBlockList
 from flask_jwt_extended import create_access_token  # , create_refresh_token
 
@@ -16,16 +16,16 @@ def login(username: str, password: str):
     - dict: Un diccionario que contiene un token de acceso si las credenciales son válidas, o None si no lo son.
     """
     # Consulta el usuario en la base de datos por su nombre de usuario y estado activo
-    user_object = (
-        db.session.query(User)
-        .filter(User.username == username, User.status == True)
+    login_object = (
+        db.session.query(Login)
+        .filter(Login.identification == username, Login.status == True)
         .first()
     )
-    if user_object is not None:  # Si se encuentra el usuario en la base de datos
-        if bcrypt_instance.check_password_hash(user_object.password, password):  # Si la contraseña proporcionada coincide con la contraseña almacenada
+    if login_object is not None:  # Si se encuentra el usuario en la base de datos
+        if bcrypt_instance.check_password_hash(login_object.password, password):  # Si la contraseña proporcionada coincide con la contraseña almacenada
             # Crear un diccionario que representa la identidad del usuario para generar el token de acceso
-            user_identity = {"id": user_object.id, "identification": user_object.identification, "username": user_object.username}
-            access_token = create_access_token(identity=user_identity)  # Generar un token de acceso usando la identidad del usuario
+            login_identity = {"id": login_object.id, "identification": login_object.identification}
+            access_token = create_access_token(identity=login_identity)  # Generar un token de acceso usando la identidad del usuario
             # refresh_token = create_refresh_token(identity=user_identity)
             return {"access_token": access_token}  # Devolver el token de acceso
         else:  # Si la contraseña proporcionada no coincide con la contraseña almacenada
