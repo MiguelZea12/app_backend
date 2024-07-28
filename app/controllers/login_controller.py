@@ -1,34 +1,30 @@
 from flask import Blueprint, request, jsonify
 from app.utils.response import create_response
-from flask_restx import Api, Resource, Namespace  # Importa Namespace de flask_restx
+from flask_restx import Api, Resource, Namespace
 
 from app.services import login_service
 from app.schemas.login_schema import LoginSchema
 
-login_blueprint = Blueprint("login", __name__, url_prefix="/login")
-# Crea un Namespace para el blueprint
+login_usr_blueprint = Blueprint("login", __name__, url_prefix="/login")
 login_ns = Namespace("login", description="Login operations")
 
-# Inicializa la extensión Api con el blueprint y el Namespace
-api = Api(login_blueprint)
-api.add_namespace(login_ns)  # Agrega el Namespace al Api
+api = Api(login_usr_blueprint)
+api.add_namespace(login_ns)
 
-# Define el esquema de usuario
 login_schema = LoginSchema()
 
-# Define la clase para obtener todos los usuarios
-@login_ns.route("/")
+@login_ns.route("/logins")
 class LoginList(Resource):
     def get(self):
         """Obtener todos los usuarios logiados"""
-        users = login_service.get_all()
-        print(users)  # Verificar datos devueltos por el servicio
-        return create_response("success", data={"users": users}, status_code=200)
+        logins = login_service.get_all()
+        print(logins)
+        return create_response("success", data={"logins": logins}, status_code=200)
 
     def post(self):
         """Crear un nuevo usuario para logearse"""
         json_data = request.get_json(force=True)
-        password = json_data.get("password") # Obtener la contraseña del JSON, puede ser None
+        password = json_data.get("password")
 
         new_login = login_service.create(
             json_data["identification"],
@@ -39,4 +35,19 @@ class LoginList(Resource):
         if new_login is None:
             return create_response("error", data={"message": "Error creating the login user"}, status_code=500)
 
-        return create_response("success", data={"user": new_login}, status_code=201)
+        return create_response("success", data={"login": new_login}, status_code=201)
+
+@login_ns.route("/logins/<int:login_id>")
+class LoginDetail(Resource):
+    def get(self, login_id):
+        login = login_service.get_by_id(login_id)
+        if login:
+            return jsonify(login)
+        return jsonify({"message": "Login user not found"}), 404
+    
+    def put(self, login_id):
+        data = request.get_json()
+        updated_login = login_service.update(login_id, data)
+        if updated_login:
+            return jsonify(updated_login)
+        return jsonify({"message": "Login user not found"}), 404

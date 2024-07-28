@@ -5,6 +5,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_restx import Api
 from app.controllers.role_controller import role_bp  # Importa el blueprint de roles
 from app.controllers import __blueprints__, register_namespaces
+from app.controllers.patient_controller import patient_bp  # Cambia el import
 from app.utils.error_handler import handle_error
 from werkzeug.middleware.proxy_fix import ProxyFix
 from os import environ
@@ -20,6 +21,11 @@ for blueprint in __blueprints__:
 
 # Registra el blueprint de roles con un nombre único
 app.register_blueprint(role_bp)
+
+# Registra el blueprint de user con un nombre único
+
+app.register_blueprint(patient_bp)  # Registra el blueprint con el nuevo nombre
+
 
 # Registra namespaces
 register_namespaces(api)
