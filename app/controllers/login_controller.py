@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.utils.response import create_response
-from flask_restx import Api, Resource, Namespace  # Importa Namespace de flask_restx
+from flask_restx import Api, Resource, Namespace
+from marshmallow import ValidationError
 
 from app.services import login_service
 from app.schemas.login_schema import LoginSchema
@@ -27,16 +28,21 @@ class LoginList(Resource):
 
     def post(self):
         """Crear un nuevo usuario para logearse"""
-        json_data = request.get_json(force=True)
-        password = json_data.get("password") # Obtener la contraseña del JSON, puede ser None
+        try:
+            json_data = request.get_json(force=True)
+            password = json_data.get("password") # Obtener la contraseña del JSON, puede ser None
 
-        new_login = login_service.create(
-            json_data["identification"],
-            json_data["name"],
-            json_data["lastname"],
-            password
-        )
-        if new_login is None:
-            return create_response("error", data={"message": "Error creating the login user"}, status_code=500)
+            new_login = login_service.create(
+                json_data["identification"],
+                json_data["name"],
+                json_data["lastname"],
+                json_data["manager_id"],
+                password
+            )
+            return create_response("success", data={"user": new_login}, status_code=201)
 
-        return create_response("success", data={"user": new_login}, status_code=201)
+        except ValidationError as ve:
+            return create_response("error", data={"message": str(ve)}, status_code=400)
+
+        except Exception as e:
+            return create_response("error", data={"message": str(e)}, status_code=500)
