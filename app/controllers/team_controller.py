@@ -24,13 +24,12 @@ class TeamList(Resource):
         """Crear un nuevo equipo"""
         try:
             json_data = request.get_json(force=True)
-            managers = json_data.get("managers")
+            name_team = json_data.get("name_team")
+            work_group_id = json_data.get("work_group_id")
 
-            new_team = team_service.create_team(managers)
+            new_team = team_service.create_team(name_team, work_group_id)
             return create_response("success", data={"team": new_team}, status_code=201)
-
         except ValidationError as ve:
             return create_response("error", message=str(ve), status_code=400)
-
         except Exception as e:
             return create_response("error", message=str(e), status_code=500)

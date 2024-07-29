@@ -11,6 +11,7 @@ class ManagerSchema(BaseSchema):  # Define una nueva clase llamada UserSchema qu
     major = fields.Str(required=True)  # Define un campo llamado "major" que se espera que sea una cadena (Str) y es obligatorio (required=True)
     semester = fields.Str(required=True)  # Define un campo llamado "semester" que se espera que sea una cadena (Str) y es obligatorio (required=True)
     city_of_residence = fields.Str(required=True)  # Define un campo llamado "city_of_residence" que se espera que sea una cadena (Str) y es obligatorio (required=True)
+    team_id = fields.Int(required=True) # Define un campo llamado "team_id" que se espera que sea un entero (Int) y es obligatorio (required=True)
     status = fields.Bool(dump_only=True)
 
 user_schema = ManagerSchema()

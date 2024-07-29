@@ -1,21 +1,12 @@
-from app.extensions import db  
-from app.models.declarative_base import DeclarativeBase  
-from sqlalchemy.dialects.postgresql import ARRAY  
-from sqlalchemy.orm import validates
+from app.extensions import db
+from app.models.declarative_base import DeclarativeBase
 
-class Team(DeclarativeBase): 
-    __tablename__ = "team" 
+class Team(DeclarativeBase):
+    __tablename__ = 'team'
     id = db.Column(db.Integer, primary_key=True)
-    managers = db.Column(ARRAY(db.Integer), nullable=False)
+    name_team = db.Column(db.String, nullable=False)
+    work_group_id = db.Column(db.Integer, db.ForeignKey('work_group.id'), nullable=False)
 
-    def __init__(self, managers):
-        self.managers = managers
-
-    # Valida que un equipo tenga exactamente 2 gestores y que sean diferentes
-    @validates('managers')
-    def validate_managers(self, key, value):
-        if len(value) != 2:
-            raise ValueError("A team must have exactly 2 managers.")
-        if value[0] == value[1]:
-            raise ValueError("The two managers must be different.")
-        return value
+    def __init__(self, name_team, work_group_id):
+        self.name_team = name_team
+        self.work_group_id = work_group_id
