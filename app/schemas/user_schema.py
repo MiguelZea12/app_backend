@@ -1,12 +1,30 @@
-from marshmallow import fields
-from app.schemas.base_schema import BaseSchema  # Asegúrate de importar correctamente tu BaseSchema
+from marshmallow import Schema, fields
 
-class UserSchema(BaseSchema):  # Define una nueva clase llamada UserSchema que hereda de BaseSchema
-    user_id = fields.Int(dump_only=True)  # Define un campo llamado "user_id" que se espera que sea un entero (Int) y solo se serializa (dump_only=True)
-    identification = fields.Str(required=True)  # Define un campo llamado "identification" que se espera que sea una cadena (Str) y es obligatorio (required=True)
-    username = fields.Str(required=True)  # Define un campo llamado "username" que se espera que sea una cadena (Str) y es obligatorio (required=True)
-    lastname = fields.Str(required=True)  # Define un campo llamado "lastname" que se espera que sea una cadena (Str) y es obligatorio (required=True)
-    status = fields.Bool(dump_only=True)  # Define un campo llamado "status" que se espera que sea un booleano (Bool) y solo se serializa (dump_only=True)
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    canton = fields.Str(required=True)
+    parroquia = fields.Str(required=True)
+    tipo_de_zona = fields.Str(required=True)
+    direccion = fields.Str(required=True)
+    referencia = fields.Str(required=True)
+    telefono_convencional = fields.Str(required=False)
+    telefono_celular = fields.Str(required=False)
+    cedula_persona_cuidadora = fields.Str(required=True)
+    nombres_completos_persona_cuidadora = fields.Str(required=True)
+    sexo_persona_cuidadora = fields.Str(required=True)
+    parentesco = fields.Str(required=True)
+    cedula_persona_beneficiaria = fields.Str(required=True)
+    nombres_completos_persona_beneficiaria = fields.Str(required=True)
+    sexo_persona_beneficiaria = fields.Str(required=True)
+    fecha_nacimiento_persona_beneficiaria = fields.Date(required=True)
+    edad_beneficiaria = fields.Int(required=True)
+    tipo_de_beneficiario = fields.Str(required=True)
+    tipo_discapacidad = fields.Str(required=True)
+    porcentaje_discapacidad = fields.Float(required=True)
+    estado = fields.Str(required=True)
+    barrio = fields.Str(required=True)
+    status = fields.Bool(dump_only=True)
+    created_at = fields.DateTime(dump_only=True)
 
 user_schema = UserSchema()
-print(user_schema)  # Verificar esquema de serialización
+users_schema = UserSchema(many=True)
