@@ -85,6 +85,7 @@ def create_manager(data):
             major=new_manager_data['major'],
             semester=new_manager_data['semester'],
             city_of_residence=new_manager_data['city_of_residence'],
+            team_id=new_manager_data['team_id'],
             status=True  # Asignar el estado inicial como True (activo)
         )
         
