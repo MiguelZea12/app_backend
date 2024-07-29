@@ -1,4 +1,6 @@
 import traceback
+from marshmallow import ValidationError
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text
 from app.extensions import db, bcrypt_instance
 from app.models.login import Login
@@ -35,7 +37,7 @@ def exists(identification: str):
     )
     return login_objects is not None
 
-def create( identification: str, name: str, lastname: str, password: str = None):
+def create(identification: str, name: str, lastname: str, manager_id: int, password: str = None):
     try:
         if password is None:
             password = identification 
@@ -45,6 +47,7 @@ def create( identification: str, name: str, lastname: str, password: str = None)
             name=name,
             lastname=lastname,
             password=bcrypt_instance.generate_password_hash(password).decode("utf8"),
+            manager_id=manager_id,
             status=True
         )
         db.session.add(new_login)
@@ -52,6 +55,13 @@ def create( identification: str, name: str, lastname: str, password: str = None)
         db.session.commit()
         login_list = LoginSchema(exclude=["password"]).dump(new_login)
         return login_list
+
+    except IntegrityError as ie:
+        db.session.rollback()
+        raise ValidationError("Error de integridad: " + str(ie.orig))
+
+    except ValidationError as ve:
+        raise ve
 
     except Exception as e:
         print(f"Error al crear usuario: {str(e)}")
