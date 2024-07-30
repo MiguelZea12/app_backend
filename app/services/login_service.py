@@ -1,33 +1,21 @@
 import traceback
+import jwt
+import datetime
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import text
 from app.extensions import db, bcrypt_instance
 from app.models.login import Login
-from app.utils.utilities import timeNowTZ
 from app.schemas.login_schema import LoginSchema
-from app.utils.error_handler import handle_error
-
+from flask import current_app as app
 
 def get_all():
-    """
-    Función para obtener todos los usuarios activos.
-
-    Retorna:
-    - list or None: Una lista de diccionarios que representan los usuarios activos si la operación es exitosa, o None si ocurre un error.
-    """
     try:
-        # Consulta todos los usuarios activos en la base de datos
         login_objects = db.session.query(Login).filter(Login.status == True).all()
-        print("Usuarios recuperados de la base de datos:", login_objects)  # Verifica los usuarios recuperados
-        # Serializa los objetos de usuario en una lista de diccionarios utilizando el esquema de usuario (UserSchema)
         login_list = LoginSchema(many=True).dump(login_objects)
-        print("Lista de usuarios serializados:", login_list)  # Verifica la lista de usuarios serializados
-        return login_list  # Devuelve la lista de usuarios serializados
-    except Exception as e:  # Captura cualquier excepción que ocurra durante la ejecución del bloque try
-        print(f"Error al obtener usuarios: {str(e)}")  # Imprime el mensaje de error
-        traceback.print_exc()  # Imprimir la traza completa de la excepción
-        return None  # Devuelve None para indicar que ocurrió un error durante la operación
+        return login_list
+    except Exception as e:
+        traceback.print_exc()
+        return None
 
 def exists(identification: str):
     login_objects = (
@@ -43,7 +31,7 @@ def create(identification: str, name: str, lastname: str, manager_id: int, passw
             password = identification 
                 
         new_login = Login(
-            identification = identification,
+            identification=identification,
             name=name,
             lastname=lastname,
             password=bcrypt_instance.generate_password_hash(password).decode("utf8"),
@@ -51,7 +39,6 @@ def create(identification: str, name: str, lastname: str, manager_id: int, passw
             status=True
         )
         db.session.add(new_login)
-
         db.session.commit()
         login_list = LoginSchema(exclude=["password"]).dump(new_login)
         return login_list
@@ -64,6 +51,20 @@ def create(identification: str, name: str, lastname: str, manager_id: int, passw
         raise ve
 
     except Exception as e:
-        print(f"Error al crear usuario: {str(e)}")
+        traceback.print_exc()
+        return None
+
+def authenticate(identification: str, password: str):
+    try:
+        user = db.session.query(Login).filter(Login.identification == identification, Login.status == True).first()
+        if user and bcrypt_instance.check_password_hash(user.password, password):
+            token = jwt.encode({
+                'identification': user.identification,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expira en 1 hora
+            }, app.config['JWT_PRIVATE_KEY'], algorithm=app.config['JWT_ALGORITHM'])
+            return {'token': token}
+        else:
+            return None
+    except Exception as e:
         traceback.print_exc()
         return None
