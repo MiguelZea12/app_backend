@@ -11,7 +11,7 @@ class ManagerSchema(BaseSchema):
     major = fields.Str(required=True)
     semester = fields.Str(required=True)
     city_of_residence = fields.Str(required=True)
-    team_id = fields.Int(required=True)
+    team_id = fields.Int(required=False)
     status = fields.Bool(dump_only=True)
 
 user_schema = ManagerSchema()

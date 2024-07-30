@@ -52,7 +52,7 @@ with app.app_context():
             semester=row['semester'],
             city_of_residence=row['city_of_residence'],
             status=True,  # Asignar el estado inicial como True (activo)
-            team_id=1  # Asigna el ID del equipo adecuado
+            team_id=None  # Asigna el ID del equipo adecuado
         )
         session.add(manager)
 
