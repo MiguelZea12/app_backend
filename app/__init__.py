@@ -5,6 +5,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_restx import Api
 from app.controllers.role_controller import role_bp
 from app.config import DevelopmentConfig, ProductionConfig
+from app.controllers.patient_controller import patient_bp
 from app.controllers import __blueprints__, register_namespaces
 from app.utils.error_handler import handle_error
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -14,6 +15,7 @@ app = Flask(__name__)
 api = Api(app)
 
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+app.register_blueprint(patient_bp)
 
 for blueprint in __blueprints__:
     app.register_blueprint(blueprint, url_prefix=f'/{blueprint.name}')

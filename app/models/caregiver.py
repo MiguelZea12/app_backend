@@ -2,7 +2,7 @@ from app.extensions import db
 from app.models.declarative_base import DeclarativeBase
 
 class Caregiver(DeclarativeBase):
-    __tablename_ = 'caregivers'
+    __tablename__ = 'caregivers'
     id = db.Column(db.Integer, primary_key=True)
     canton = db.Column(db.String(100), nullable=False)
     parish = db.Column(db.String(100), nullable=False)
@@ -13,14 +13,14 @@ class Caregiver(DeclarativeBase):
     landline_2 = db.Column(db.String(20), nullable=True)
     mobile_1 = db.Column(db.String(20), nullable=True)
     mobile_2 = db.Column(db.String(20), nullable=True)
-    caregiver_document_id = db.Column(db.String(20), nullable=False, unique=True)
+    caregiver_document_id = db.Column(db.String(20), nullable=False)
     caregiver_last_name = db.Column(db.String(100), nullable=False)
     caregiver_first_name = db.Column(db.String(100), nullable=False)
     caregiver_gender = db.Column(db.String(10), nullable=False)
     relationship = db.Column(db.String(50), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
 
-    def _init_(self, canton, parish, zone_type, address, reference, landline_1, landline_2, mobile_1, mobile_2, caregiver_document_id, caregiver_last_name, caregiver_first_name, caregiver_gender, relationship, is_active=True):
+    def __init__(self, canton, parish, zone_type, address, reference, landline_1, landline_2, mobile_1, mobile_2, caregiver_document_id, caregiver_last_name, caregiver_first_name, caregiver_gender, relationship, is_active=True):
         self.canton = canton
         self.parish = parish
         self.zone_type = zone_type
@@ -37,5 +37,5 @@ class Caregiver(DeclarativeBase):
         self.relationship = relationship
         self.is_active = is_active
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<Caregiver {self.caregiver_first_name} {self.caregiver_last_name}>'

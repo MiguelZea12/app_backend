@@ -2,7 +2,7 @@ from os import environ, path
 from datetime import timedelta
 
 class Config(object):
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:12345678@localhost:5432/backvi2'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres:12345678@localhost:5432/backvin4'
     SECRET_KEY = environ.get("SECRET_KEY")  # Clave secreta para la aplicación Flask
     CORS_HEADERS = "Content-Type"  # Encabezados CORS permitidos
     PROPAGATE_EXCEPTIONS = True  # Propagar excepciones en la aplicación
