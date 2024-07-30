@@ -7,14 +7,14 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-# Instala las dependencias del proyecto
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Copia el código de la aplicación al contenedor
 COPY . .
+
+# Instala las dependencias del proyecto
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Expone el puerto 5000 en el contenedor
 EXPOSE 5000
 
 # Comando para ejecutar la aplicación cuando se inicie el contenedor
-CMD ["python", "run.py"]
+CMD ["python3", "run.py"]
