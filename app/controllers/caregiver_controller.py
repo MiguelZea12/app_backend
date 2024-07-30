@@ -9,13 +9,20 @@ caregiver_ns = Namespace('Cuidadores', description='Operaciones relacionadas con
 
 caregiver_model = caregiver_ns.model('Cuidador', {
     'id': fields.Integer(readonly=True, description='El identificador único del cuidador'),
-    'name': fields.String(required=True, description='El nombre del cuidador'),
-    'document_id': fields.String(required=True, description='El ID del documento del cuidador'),
-    'gender': fields.String(required=True, description='El género del cuidador'),
-    'age': fields.Integer(required=True, description='La edad del cuidador'),
-    'career': fields.String(required=True, description='La carrera del cuidador'),
-    'semester': fields.String(required=True, description='El semestre del cuidador'),
-    'city': fields.String(required=True, description='La ciudad del cuidador'),
+    'canton': fields.String(required=True, description='El cantón del cuidador'),
+    'parish': fields.String(required=True, description='La parroquia del cuidador'),
+    'zone_type': fields.String(required=True, description='El tipo de zona del cuidador'),
+    'address': fields.String(required=True, description='La dirección del cuidador'),
+    'reference': fields.String(description='Referencia de la dirección'),
+    'landline_1': fields.String(description='Teléfono fijo 1'),
+    'landline_2': fields.String(description='Teléfono fijo 2'),
+    'mobile_1': fields.String(description='Teléfono móvil 1'),
+    'mobile_2': fields.String(description='Teléfono móvil 2'),
+    'caregiver_document_id': fields.String(required=True, description='El ID del documento del cuidador'),
+    'caregiver_last_name': fields.String(required=True, description='El apellido del cuidador'),
+    'caregiver_first_name': fields.String(required=True, description='El nombre del cuidador'),
+    'caregiver_gender': fields.String(required=True, description='El género del cuidador'),
+    'relationship': fields.String(required=True, description='La relación con el usuario'),
     'is_active': fields.Boolean(readonly=True, description='Si el cuidador está activo')
 })
 
@@ -33,7 +40,7 @@ class CaregiverList(Resource):
     def post(self):
         """Crear un nuevo cuidador"""
         data = request.json
-        return create_caregiver(data), 201
+        return create_caregiver(data)
 
 @caregiver_ns.route('/cuidadores/<int:id>')
 @caregiver_ns.response(404, 'Cuidador no encontrado')
@@ -43,13 +50,18 @@ class Caregiver(Resource):
     @caregiver_ns.marshal_with(caregiver_model)
     def get(self, id):
         """Obtener un cuidador dado su id"""
-        return get_caregiver_by_id(id)
+        result = get_caregiver_by_id(id)
+        if not result:
+            caregiver_ns.abort(404, 'Cuidador no encontrado')
+        return result
 
     @caregiver_ns.doc('eliminar_cuidador')
     @caregiver_ns.response(204, 'Cuidador eliminado')
     def delete(self, id):
         """Eliminar un cuidador dado su id"""
-        disable_caregiver(id)
+        result = disable_caregiver(id)
+        if not result:
+            caregiver_ns.abort(404, 'Cuidador no encontrado')
         return '', 204
 
     @caregiver_ns.expect(caregiver_model)
@@ -57,4 +69,7 @@ class Caregiver(Resource):
     def put(self, id):
         """Actualizar un cuidador dado su id"""
         data = request.json
-        return update_caregiver(id, data)
+        result = update_caregiver(id, data)
+        if not result:
+            caregiver_ns.abort(404, 'Cuidador no encontrado')
+        return result

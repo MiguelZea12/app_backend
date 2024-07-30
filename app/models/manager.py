@@ -4,16 +4,16 @@ from app.models.declarative_base import DeclarativeBase
 class Manager(DeclarativeBase):
     __tablename__ = 'manager'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100), nullable=False)
-    last_name = db.Column(db.String(100), nullable=False)
-    identity_document = db.Column(db.String(50), unique=True, nullable=False)
-    gender = db.Column(db.String(10), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-    major = db.Column(db.String(100), nullable=False)
-    semester = db.Column(db.String(50), nullable=False)
-    city_of_residence = db.Column(db.String(100), nullable=False)
-    status = db.Column(db.Boolean, nullable=False, default=True)
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=False)
+    first_name = db.Column(db.String(100), nullable=True)
+    last_name = db.Column(db.String(100), nullable=True)
+    identity_document = db.Column(db.String(50), unique=True, nullable=True)
+    gender = db.Column(db.String(10), nullable=True)
+    age = db.Column(db.Integer, nullable=True)
+    major = db.Column(db.String(100), nullable=True)
+    semester = db.Column(db.String(50), nullable=True)
+    city_of_residence = db.Column(db.String(100), nullable=True)
+    status = db.Column(db.Boolean, nullable=True, default=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
 
     def __init__(self, first_name, last_name, identity_document, gender, age, major, semester, city_of_residence, status, team_id):
         self.first_name = first_name
