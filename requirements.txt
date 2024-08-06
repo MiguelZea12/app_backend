@@ -21,7 +21,6 @@ sentry_sdk
 flask_jwt_extended
 cryptography
 xlrd
-pandas
 python-dotenv
 openpyxl
 cryptography==41.0.7
