@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_restx import Api, Resource, Namespace, fields
 
 from app.services import assignmentUser_service
-from app.schemas.assignmentUser_schema import AssignmentUserSchema
+from app.schemas.assignmentUser_schema import AssignmentSchema
 
 assignmentUser_blueprint = Blueprint("AssignmentUser", __name__, url_prefix="/assignments")
 assignment_ns = Namespace("AssignmentUser", description="Assignment operations")
@@ -10,7 +10,7 @@ assignment_ns = Namespace("AssignmentUser", description="Assignment operations")
 api = Api(assignmentUser_blueprint)
 api.add_namespace(assignment_ns)
 
-assignment_schema = AssignmentUserSchema()
+assignment_schema = AssignmentSchema()
 
 assignment_model = assignment_ns.model('AssignmentUser', {
     'login_id': fields.Integer(required=True, description='ID del usuario que se va a asignar'),

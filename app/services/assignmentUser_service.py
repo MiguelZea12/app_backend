@@ -2,12 +2,12 @@ import traceback
 from sqlalchemy import text
 from app.extensions import db
 from app.models.assignmentUser import AssignmentUser
-from app.schemas.assignmentUser_schema import AssignmentUserSchema
+from app.schemas.assignmentUser_schema import AssignmentSchema
 
 def get_all_assignments():
     try:
         assignment_objects = db.session.query(AssignmentUser).all()
-        assignment_list = AssignmentUserSchema(many=True).dump(assignment_objects)
+        assignment_list = AssignmentSchema(many=True).dump(assignment_objects)
         return assignment_list
     except Exception as e:
         traceback.print_exc()
@@ -19,7 +19,7 @@ def get_assignments_by_team_id(team_id):
         if not assignments:
             return None
         
-        assignments_schema = AssignmentUserSchema(many=True)
+        assignments_schema = AssignmentSchema(many=True)
         assignments_data = assignments_schema.dump(assignments)
         return assignments_data
     except Exception as e:
@@ -28,7 +28,7 @@ def get_assignments_by_team_id(team_id):
 
 def create_assignment(data):
     try:
-        new_assignment_data = AssignmentUserSchema().load(data)
+        new_assignment_data = AssignmentSchema().load(data)
         existing_assignment = db.session.query(AssignmentUser).filter_by(login_id=new_assignment_data['login_id']).first()
         if existing_assignment:
             return {"error": "El usuario ya tiene una asignación."}
@@ -41,7 +41,7 @@ def create_assignment(data):
         db.session.add(new_assignment)
         db.session.commit()
 
-        assignment_data = AssignmentUserSchema().dump(new_assignment)
+        assignment_data = AssignmentSchema().dump(new_assignment)
         return assignment_data
     except Exception as e:
         traceback.print_exc()
@@ -58,7 +58,7 @@ def update_assignment(assignment_id, data):
         
         db.session.commit()
 
-        assignment_schema = AssignmentUserSchema()
+        assignment_schema = AssignmentSchema()
         assignment_data = assignment_schema.dump(assignment)
         return assignment_data
     except Exception as e:
